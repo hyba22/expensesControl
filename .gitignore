@@ -1,0 +1,30 @@
+# Dependencies and builds
+node_modules/
+dist/
+coverage/
+*.tsbuildinfo
+
+# Secrets and local settings
+.env
+.env.*
+!.env.example
+setup-db.sql
+
+# Generated Prisma client
+backend/src/generated/
+
+# Personal documents (payslips, bank statements) used for testing
+samples/private/
+
+# Logs and editor files
+*.log
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+
+# Local assistant files
+CLAUDE.md
+.claude/
+.agents/
+.windsurf/
