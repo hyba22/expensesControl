@@ -23,3 +23,14 @@ describe('parseAmount', () => {
     expect(parseAmount(text)).toBeNull()
   })
 })
+
+describe('parseAmount with 2-decimal currencies', () => {
+  it('accepts cents and stores thousandths', () => {
+    expect(parseAmount('12,50', 2)).toBe(12500)
+    expect(parseAmount('1 299.99', 2)).toBe(1299990)
+  })
+
+  it('rejects a third decimal', () => {
+    expect(parseAmount('12,345', 2)).toBeNull()
+  })
+})

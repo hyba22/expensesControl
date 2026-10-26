@@ -15,15 +15,15 @@ export interface ChatMessage {
   content: string;
 }
 
-function systemPrompt(language: 'fr' | 'en', name: string, data: string) {
-  return `You are the money assistant of ExpenseControl, a personal finance app used in Tunisia.
+function systemPrompt(language: 'fr' | 'en', name: string, currency: string, data: string) {
+  return `You are the money assistant of ExpenseControl, a personal finance app.
 You help ${name} understand their spending and stick to a budget.
 
 How to answer:
 - Answer in ${language === 'fr' ? 'French' : 'English'}, warmly and simply, like a helpful friend who is good with money.
 - Be short: 2 to 6 sentences, or a few bullet points. Use **bold** for key numbers.
 - Base every number on the data below. Never invent transactions or amounts. If the data is not enough, say so and suggest what to record.
-- Amounts are in Tunisian dinars (TND, 3 decimals).
+- Amounts are in ${currency === 'TND' ? 'Tunisian dinars (TND, 3 decimals)' : currency}.
 - Salaries arrive at the end of the month and pay for the following month: "money for this month" is last month's income.
 - Give practical budgeting tips: where to cut, realistic monthly limits, how to save a target amount, spotting unusual expenses.
 - You only give budgeting advice. You do not give investment, trading, crypto, loan or tax advice: say politely that a licensed professional should help with that, then offer budgeting help instead.
@@ -62,14 +62,14 @@ export class AssistantService {
 
   // Asks Workers AI and returns its streamed answer (server-sent events).
   async chat(
-    user: { id: string; name: string },
+    user: { id: string; name: string; currency: string },
     messages: ChatMessage[],
     language: 'fr' | 'en',
   ): Promise<ReadableStream<Uint8Array>> {
     if (!this.configured) throw new ServiceUnavailableException('AI_NOT_CONFIGURED');
     await this.countMessage(user.id);
 
-    const data = await this.context.build(user.id, language);
+    const data = await this.context.build(user.id, language, user.currency);
     const accountId = this.config.get('CLOUDFLARE_ACCOUNT_ID', { infer: true });
     const model = this.config.get('AI_MODEL', { infer: true });
     const response = await fetch(
@@ -82,7 +82,7 @@ export class AssistantService {
         },
         body: JSON.stringify({
           messages: [
-            { role: 'system', content: systemPrompt(language, user.name, data) },
+            { role: 'system', content: systemPrompt(language, user.name, user.currency, data) },
             ...messages,
           ],
           stream: true,

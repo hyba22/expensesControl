@@ -29,6 +29,7 @@ export class AuthService {
     const user = await this.users.create({
       email: dto.email,
       name: dto.name,
+      currency: dto.currency,
       passwordHash: await argon2.hash(dto.password, { type: argon2.argon2id }),
     });
     await this.categories.ensureDefaults(user.id);

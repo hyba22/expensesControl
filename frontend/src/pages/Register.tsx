@@ -9,6 +9,8 @@ import { AuthLayout } from '../components/AuthLayout'
 import { Field } from '../components/Field'
 import { FormError } from '../components/FormError'
 import { SubmitButton } from '../components/SubmitButton'
+import { CurrencySelect } from '../components/CurrencySelect'
+import { guessCurrency } from '../lib/currencies'
 
 // Same rules as the backend validation.
 const rules = [
@@ -24,6 +26,7 @@ export function Register() {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [currency, setCurrency] = useState<string>(guessCurrency)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
 
@@ -37,7 +40,7 @@ export function Register() {
     setError(null)
     setLoading(true)
     try {
-      await register(name, email, password)
+      await register(name, email, password, currency)
       navigate('/app', { replace: true })
     } catch (err) {
       setError(errorText(err, t.errors, { 409: t.auth.errors.emailTaken }))
@@ -68,6 +71,7 @@ export function Register() {
           onChange={(e) => setEmail(e.target.value)}
           required
         />
+        <CurrencySelect label={t.auth.currency} value={currency} onChange={setCurrency} />
         <Field
           label={t.auth.password}
           type="password"

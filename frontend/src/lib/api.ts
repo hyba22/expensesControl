@@ -4,6 +4,7 @@ export interface User {
   id: string
   email: string
   name: string
+  currency: string
   createdAt: string
 }
 
@@ -124,8 +125,13 @@ export async function apiStream(path: string, body: unknown): Promise<ReadableSt
   return response.body
 }
 
+export const usersApi = {
+  updateMe: (data: { name?: string; currency?: string }) =>
+    api<User>('/users/me', { method: 'PATCH', body: JSON.stringify(data) }),
+}
+
 export const auth = {
-  register: (data: { name: string; email: string; password: string }) =>
+  register: (data: { name: string; email: string; password: string; currency: string }) =>
     send<AuthResponse>('/auth/register', { method: 'POST', body: JSON.stringify(data) }).then(remember),
 
   login: (data: { email: string; password: string }) =>

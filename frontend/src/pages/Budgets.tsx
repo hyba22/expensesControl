@@ -124,7 +124,7 @@ function BudgetForm({
   onClose: () => void
   onSaved: () => Promise<void>
 }) {
-  const { t, money } = useI18n()
+  const { t, money, currency, decimals } = useI18n()
   const toast = useToast()
   const { categories } = useCategories()
   const [categoryId, setCategoryId] = useState('')
@@ -135,9 +135,9 @@ function BudgetForm({
   useEffect(() => {
     if (!open) return
     setCategoryId(budget?.categoryId ?? '')
-    setAmount(budget ? formatAmountInput(budget.amount) : '')
+    setAmount(budget ? formatAmountInput(budget.amount, decimals) : '')
     setError(null)
-  }, [open, budget])
+  }, [open, budget, decimals])
 
   // Categories that don't have a budget yet (plus the one being edited).
   const taken = new Set(overview?.budgets.map((b) => b.categoryId))
@@ -147,12 +147,12 @@ function BudgetForm({
   const submit = async (event: FormEvent) => {
     event.preventDefault()
     if (!categoryId) return setError(t.budgets.errors.category)
-    const millimes = parseAmount(amount)
-    if (millimes === null || millimes < 1000) return setError(t.budgets.errors.limit)
+    const value = parseAmount(amount, decimals)
+    if (value === null || value < 1000) return setError(t.budgets.errors.limit)
     setSaving(true)
     setError(null)
     try {
-      await budgetsApi.set(categoryId, millimes)
+      await budgetsApi.set(categoryId, value)
       toast(t.budgets.saved)
       await onSaved()
       onClose()
@@ -196,7 +196,7 @@ function BudgetForm({
 
         <div>
           <label htmlFor="budget-amount" className="text-sm font-medium text-ink/80 dark:text-white/80">
-            {t.budgets.limit}
+            {t.budgets.limit(currency)}
           </label>
           <input
             id="budget-amount"
@@ -210,7 +210,7 @@ function BudgetForm({
             <motion.p initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} className="mt-2 flex flex-wrap items-center gap-2 text-sm text-ink/60 dark:text-white/60">
               <Sparkles size={15} className="text-brand dark:text-brand-glow" />
               {t.budgets.suggestion(money(suggestion))}
-              <button type="button" onClick={() => setAmount(formatAmountInput(suggestion))} className="font-medium text-brand hover:underline dark:text-brand-glow">
+              <button type="button" onClick={() => setAmount(formatAmountInput(suggestion, decimals))} className="font-medium text-brand hover:underline dark:text-brand-glow">
                 {t.budgets.useSuggestion}
               </button>
             </motion.p>

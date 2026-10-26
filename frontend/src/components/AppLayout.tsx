@@ -8,6 +8,7 @@ import { useI18n } from '../i18n/I18nContext'
 import { LanguageToggle } from './LanguageToggle'
 import { Logo } from './Logo'
 import { ThemeToggle } from './ThemeToggle'
+import { SettingsButton } from './SettingsButton'
 import { ToastProvider } from './Toast'
 import { AssistantChat } from './assistant/AssistantChat'
 
@@ -30,8 +31,8 @@ export function AppLayout() {
       <CategoriesProvider>
         <div className="min-h-dvh bg-zinc-50 pb-24 sm:pb-0 dark:bg-ink">
           <header className="sticky top-0 z-30 border-b border-black/5 bg-white/80 backdrop-blur-lg dark:border-white/8 dark:bg-ink/80">
-            <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
-              <Logo />
+            <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 2xl:max-w-screen-2xl">
+              <Logo compact />
               <nav className="hidden items-center gap-1 rounded-2xl bg-black/[0.04] p-1 sm:flex dark:bg-white/[0.06]">
                 {links.map(({ to, label, icon: Icon }) => (
                   <NavLink
@@ -41,7 +42,7 @@ export function AppLayout() {
                     aria-label={t.nav[label]}
                     title={t.nav[label]}
                     className={({ isActive }) =>
-                      `relative flex h-9 items-center gap-2 whitespace-nowrap rounded-xl px-3 text-sm font-medium transition xl:px-3.5 ${isActive ? 'text-white' : 'text-ink/60 hover:text-ink dark:text-white/60 dark:hover:text-white'}`
+                      `relative flex h-9 items-center gap-2 whitespace-nowrap rounded-xl px-3 text-sm font-medium transition 2xl:px-3.5 ${isActive ? 'text-white' : 'text-ink/60 hover:text-ink dark:text-white/60 dark:hover:text-white'}`
                     }
                   >
                     {({ isActive }) => (
@@ -54,7 +55,7 @@ export function AppLayout() {
                           />
                         )}
                         <Icon size={16} className="relative" />
-                        <span className="relative hidden xl:inline">{t.nav[label]}</span>
+                        <span className="relative hidden 2xl:inline">{t.nav[label]}</span>
                       </>
                     )}
                   </NavLink>
@@ -63,6 +64,7 @@ export function AppLayout() {
               <div className="flex items-center gap-2">
                 <LanguageToggle />
                 <ThemeToggle />
+                <SettingsButton />
                 <button
                   type="button"
                   onClick={() => {
@@ -71,10 +73,10 @@ export function AppLayout() {
                   }}
                   disabled={leaving}
                   aria-label={t.nav.signOut}
-                  className="flex h-10 items-center gap-2 rounded-xl bg-ink px-3 text-sm font-medium text-white transition hover:bg-brand lg:px-4 dark:bg-white dark:text-ink dark:hover:bg-brand dark:hover:text-white"
+                  title={t.nav.signOut}
+                  className="grid size-10 shrink-0 place-items-center rounded-xl bg-ink text-white transition hover:bg-brand dark:bg-white dark:text-ink dark:hover:bg-brand dark:hover:text-white"
                 >
-                  <LogOut size={16} />
-                  <span className="hidden lg:inline">{t.nav.signOut}</span>
+                  <LogOut size={17} />
                 </button>
               </div>
             </div>

@@ -3,8 +3,7 @@ import { PrismaService } from '../prisma/prisma.service.js';
 import { BudgetsService } from '../budgets/budgets.service.js';
 import { StatsService } from '../stats/stats.service.js';
 import { currentMonth, monthRange, shiftMonth } from '../common/months.js';
-
-const tnd = (millimes: number) => `${(millimes / 1000).toFixed(3)} TND`;
+import { formatMoney } from '../common/currencies.js';
 
 // Built-in category names, so answers use the same words as the app.
 const DEFAULT_NAMES: Record<'fr' | 'en', Record<string, string>> = {
@@ -33,7 +32,8 @@ export class FinancialContext {
     private readonly stats: StatsService,
   ) {}
 
-  async build(userId: string, language: 'fr' | 'en') {
+  async build(userId: string, language: 'fr' | 'en', currency: string) {
+    const money = (amount: number) => formatMoney(amount, currency);
     const month = currentMonth();
     const [categories, totals, lastMonthIncome, stats, budgetOverview, recent] =
       await Promise.all([
@@ -69,34 +69,34 @@ export class FinancialContext {
 
     const lines = [
       `Today: ${new Date().toISOString().slice(0, 10)} (day ${day} of ${stats.daily.current.length} of the month ${month}).`,
-      `Overall balance (all income minus all expenses): ${tnd(sum('INCOME') - sum('EXPENSE'))}.`,
-      `Money for this month (income received last month): ${tnd(available)}. Spent this month: ${tnd(spent)}. Left to spend: ${tnd(available - spent)}.`,
-      `Spent by the same day last month: ${tnd(stats.daily.previous[Math.min(day, stats.daily.previous.length) - 1] ?? 0)}.`,
+      `Overall balance (all income minus all expenses): ${money(sum('INCOME') - sum('EXPENSE'))}.`,
+      `Money for this month (income received last month): ${money(available)}. Spent this month: ${money(spent)}. Left to spend: ${money(available - spent)}.`,
+      `Spent by the same day last month: ${money(stats.daily.previous[Math.min(day, stats.daily.previous.length) - 1] ?? 0)}.`,
       '',
       'Spending this month by category:',
       ...(stats.byCategory.length
-        ? stats.byCategory.map((c) => `- ${name(c.categoryId)}: ${tnd(c.amount)}`)
+        ? stats.byCategory.map((c) => `- ${name(c.categoryId)}: ${money(c.amount)}`)
         : ['- none yet']),
       '',
       'Monthly budgets (limit / spent this month):',
       ...(budgetOverview.budgets.length
         ? budgetOverview.budgets.map(
-            (b) => `- ${name(b.categoryId)}: ${tnd(b.amount)} / ${tnd(b.spent)} (${Math.round((b.spent / b.amount) * 100)}%)`,
+            (b) => `- ${name(b.categoryId)}: ${money(b.amount)} / ${money(b.spent)} (${Math.round((b.spent / b.amount) * 100)}%)`,
           )
         : ['- no budgets set']),
       '',
       'Last 6 months (income / expenses):',
-      ...stats.monthly.map((m) => `- ${m.month}: ${tnd(m.income)} / ${tnd(m.expense)}`),
+      ...stats.monthly.map((m) => `- ${m.month}: ${money(m.income)} / ${money(m.expense)}`),
       '',
       'Top places this month:',
       ...(stats.topMerchants.length
-        ? stats.topMerchants.map((m) => `- ${m.name.slice(0, 50)}: ${tnd(m.amount)} (${m.count}x)`)
+        ? stats.topMerchants.map((m) => `- ${m.name.slice(0, 50)}: ${money(m.amount)} (${m.count}x)`)
         : ['- none']),
       '',
       'Latest transactions:',
       ...recent.map(
         (t) =>
-          `- ${t.date.toISOString().slice(0, 10)} ${t.type === 'INCOME' ? '+' : '-'}${tnd(t.amount)} "${t.description.slice(0, 60)}" [${name(t.categoryId)}]`,
+          `- ${t.date.toISOString().slice(0, 10)} ${t.type === 'INCOME' ? '+' : '-'}${money(t.amount)} "${t.description.slice(0, 60)}" [${name(t.categoryId)}]`,
       ),
     ];
     return lines.join('\n');

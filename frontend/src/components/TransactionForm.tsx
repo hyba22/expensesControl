@@ -32,7 +32,7 @@ const inputClass =
   'h-12 w-full rounded-xl border border-black/10 bg-white px-3.5 text-[15px] outline-none transition placeholder:text-ink/35 focus:border-brand focus:ring-4 focus:ring-brand/15 dark:border-white/12 dark:bg-ink dark:placeholder:text-white/30 dark:focus:border-brand-glow'
 
 export function TransactionForm({ open, onClose, onSaved, transaction }: Props) {
-  const { t } = useI18n()
+  const { t, currency, decimals } = useI18n()
   const toast = useToast()
   const { categories } = useCategories()
   const showAlerts = useBudgetAlerts()
@@ -50,21 +50,21 @@ export function TransactionForm({ open, onClose, onSaved, transaction }: Props) 
   useEffect(() => {
     if (!open) return
     setType(transaction?.type ?? 'EXPENSE')
-    setAmount(transaction ? formatAmountInput(transaction.amount) : '')
+    setAmount(transaction ? formatAmountInput(transaction.amount, decimals) : '')
     setDescription(transaction?.description ?? '')
     setCategoryId(transaction?.categoryId ?? null)
     setDate(transaction?.date.slice(0, 10) ?? toDay(new Date()))
     setNote(transaction?.note ?? '')
     setError(null)
     setConfirmDelete(false)
-  }, [open, transaction])
+  }, [open, transaction, decimals])
 
   const choices = categories.filter((c) => c.type === type)
 
   const submit = async (event: FormEvent) => {
     event.preventDefault()
-    const millimes = parseAmount(amount)
-    if (millimes === null) return setError(t.transactions.errors.amount)
+    const value = parseAmount(amount, decimals)
+    if (value === null) return setError(t.transactions.errors.amount(decimals))
     if (!date) return setError(t.transactions.errors.date)
 
     // The description is optional: fall back to the category name, or to
@@ -76,7 +76,7 @@ export function TransactionForm({ open, onClose, onSaved, transaction }: Props) 
 
     setError(null)
     setSaving(true)
-    const data = { type, amount: millimes, description: label, categoryId, date, note: note.trim() || null }
+    const data = { type, amount: value, description: label, categoryId, date, note: note.trim() || null }
     try {
       if (transaction) await transactionsApi.update(transaction.id, data)
       else showAlerts((await transactionsApi.create(data)).alerts)
@@ -118,13 +118,13 @@ export function TransactionForm({ open, onClose, onSaved, transaction }: Props) 
 
         <div>
           <label htmlFor="tx-amount" className="text-sm font-medium text-ink/80 dark:text-white/80">
-            {t.transactions.amount}
+            {t.transactions.amount(currency)}
           </label>
           <input
             id="tx-amount"
             inputMode="decimal"
             autoFocus={!transaction}
-            placeholder={t.transactions.amountPlaceholder}
+            placeholder={(0).toFixed(decimals)}
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
             className={`${inputClass} mt-1.5 h-14 font-display text-2xl font-semibold tabular-nums ${type === 'INCOME' ? 'text-emerald-600 dark:text-emerald-400' : ''}`}

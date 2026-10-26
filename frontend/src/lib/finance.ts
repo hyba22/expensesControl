@@ -163,9 +163,9 @@ export const statsApi = {
 
 // Reads amounts the way people write them in Tunisia and elsewhere:
 // "12,5", "12.500", "1 308,952", "1.308,952", "1,308.952", "1500 DT".
-// Returns millimes, or null when it isn't a positive amount with at most
-// 3 decimals.
-export function parseAmount(text: string): number | null {
+// Returns thousandths (millimes for TND), or null when it isn't a positive
+// amount with at most `maxDecimals` decimals (3 for TND, 2 for EUR...).
+export function parseAmount(text: string, maxDecimals = 3): number | null {
   let clean = text.replace(/(tnd|dt|د\.ت)/gi, '').replace(/[\s  ']/g, '')
   if (/[.,]{2}/.test(clean)) return null
   const lastSeparator = Math.max(clean.lastIndexOf(','), clean.lastIndexOf('.'))
@@ -180,12 +180,13 @@ export function parseAmount(text: string): number | null {
   }
   if (!/^\d{1,7}(\.\d{1,3})?$/.test(clean)) return null
   const [whole, decimals = ''] = clean.split('.')
+  if (decimals.length > maxDecimals) return null
   const millimes = Number(whole) * 1000 + Number(decimals.padEnd(3, '0'))
   return millimes > 0 ? millimes : null
 }
 
-export function formatAmountInput(millimes: number) {
-  return (millimes / 1000).toFixed(3)
+export function formatAmountInput(thousandths: number, decimals = 3) {
+  return (thousandths / 1000).toFixed(decimals)
 }
 
 // Local calendar dates as YYYY-MM-DD.

@@ -73,7 +73,7 @@ export class AssistantController {
     if (messages[messages.length - 1].role !== 'user') messages.pop();
 
     const stream = await this.assistant.chat(
-      { id: user.id, name: firstName },
+      { id: user.id, name: firstName, currency: profile?.currency ?? 'TND' },
       messages,
       dto.language,
     );

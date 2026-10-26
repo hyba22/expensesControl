@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
 import type { User } from '../generated/prisma/client.js';
 
-export type PublicUser = Pick<User, 'id' | 'email' | 'name' | 'createdAt'>;
+export type PublicUser = Pick<User, 'id' | 'email' | 'name' | 'currency' | 'createdAt'>;
 
 @Injectable()
 export class UsersService {
@@ -16,8 +16,12 @@ export class UsersService {
     return this.prisma.user.findUnique({ where: { id } });
   }
 
-  create(data: { email: string; name: string; passwordHash: string }) {
+  create(data: { email: string; name: string; passwordHash: string; currency?: string }) {
     return this.prisma.user.create({ data });
+  }
+
+  async update(id: string, data: { name?: string; currency?: string }) {
+    return this.toPublic(await this.prisma.user.update({ where: { id }, data }));
   }
 
   // Never send the password hash to the client.
@@ -26,6 +30,7 @@ export class UsersService {
       id: user.id,
       email: user.email,
       name: user.name,
+      currency: user.currency,
       createdAt: user.createdAt,
     };
   }

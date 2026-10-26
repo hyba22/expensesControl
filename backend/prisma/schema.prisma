@@ -13,6 +13,8 @@ model User {
   email        String   @unique
   name         String
   passwordHash String
+  // ISO code (TND, EUR...). Amounts stay in thousandths whatever it is.
+  currency     String   @default("TND")
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 

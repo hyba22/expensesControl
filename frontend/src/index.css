@@ -33,6 +33,48 @@
   }
 }
 
+/* Thin, rounded scrollbars in the app's colors, light and dark. */
+@layer base {
+  :root {
+    --scrollbar-thumb: rgb(124 58 237 / 0.35);
+    --scrollbar-thumb-hover: #7c3aed;
+    --scrollbar-track: transparent;
+  }
+  html.dark {
+    --scrollbar-thumb: rgb(167 139 250 / 0.3);
+    --scrollbar-thumb-hover: #a78bfa;
+  }
+  /* Firefox only: in Chromium browsers these would override the rounded
+     ::-webkit-scrollbar styles below. */
+  @supports not selector(::-webkit-scrollbar) {
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+    }
+  }
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--scrollbar-track);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border: 3px solid transparent;
+    border-radius: 999px;
+    background-clip: padding-box;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-thumb-hover);
+    border: 2px solid transparent;
+    background-clip: padding-box;
+  }
+  ::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
