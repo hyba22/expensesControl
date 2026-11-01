@@ -18,6 +18,12 @@ import { AuthService } from './auth.service.js';
 import type { IssuedTokens } from './tokens.service.js';
 import { LoginDto } from './dto/login.dto.js';
 import { RegisterDto } from './dto/register.dto.js';
+import {
+  ChangePasswordDto,
+  DeleteAccountDto,
+  ForgotPasswordDto,
+  ResetPasswordDto,
+} from './dto/password.dto.js';
 import { Public } from './decorators/public.decorator.js';
 import {
   CurrentUser,
@@ -103,6 +109,52 @@ export class AuthController {
   @Get('me')
   me(@CurrentUser() user: AuthUser) {
     return this.auth.me(user.id);
+  }
+
+  @Public()
+  @Throttle(AUTH_LIMIT)
+  @HttpCode(204)
+  @Post('forgot-password')
+  async forgotPassword(@Body() dto: ForgotPasswordDto) {
+    await this.auth.forgotPassword(dto.email, dto.language);
+  }
+
+  @Public()
+  @Throttle(AUTH_LIMIT)
+  @HttpCode(204)
+  @Post('reset-password')
+  async resetPassword(@Body() dto: ResetPasswordDto) {
+    await this.auth.resetPassword(dto.token, dto.password);
+  }
+
+  @ApiBearerAuth()
+  @Throttle(AUTH_LIMIT)
+  @HttpCode(204)
+  @Post('change-password')
+  async changePassword(
+    @CurrentUser() user: AuthUser,
+    @Body() dto: ChangePasswordDto,
+    @Req() req: Request,
+  ) {
+    await this.auth.changePassword(
+      user.id,
+      dto.currentPassword,
+      dto.newPassword,
+      req.cookies?.[REFRESH_COOKIE] as string | undefined,
+    );
+  }
+
+  @ApiBearerAuth()
+  @Throttle(AUTH_LIMIT)
+  @HttpCode(204)
+  @Post('delete-account')
+  async deleteAccount(
+    @CurrentUser() user: AuthUser,
+    @Body() dto: DeleteAccountDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    await this.auth.deleteAccount(user.id, dto.password);
+    res.clearCookie(REFRESH_COOKIE, this.cookieOptions());
   }
 
   private respond(

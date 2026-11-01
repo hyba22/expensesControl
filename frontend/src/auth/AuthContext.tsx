@@ -10,6 +10,7 @@ interface AuthState {
   login: (email: string, password: string) => Promise<void>
   register: (name: string, email: string, password: string, currency: string) => Promise<void>
   updateProfile: (data: { name?: string; currency?: string }) => Promise<void>
+  deleteAccount: (password: string) => Promise<void>
   logout: () => Promise<void>
 }
 
@@ -43,6 +44,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     register: async (name, email, password, currency) =>
       signIn(await auth.register({ name, email, password, currency })),
     updateProfile: async (data) => signIn(await usersApi.updateMe(data)),
+    deleteAccount: async (password) => {
+      await auth.deleteAccount(password)
+      setUser(null)
+      setStatus('guest')
+    },
     logout: async () => {
       await auth.logout().catch(() => {})
       setUser(null)

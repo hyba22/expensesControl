@@ -60,6 +60,21 @@ export class TokensService {
     });
   }
 
+  // Signs the user out everywhere, except the session holding `keep`.
+  async revokeAll(userId: string, keep?: string) {
+    const current = keep
+      ? await this.prisma.refreshToken.findUnique({ where: { tokenHash: hash(keep) } })
+      : null;
+    await this.prisma.refreshToken.updateMany({
+      where: {
+        userId,
+        revokedAt: null,
+        ...(current && { family: { not: current.family } }),
+      },
+      data: { revokedAt: new Date() },
+    });
+  }
+
   private revokeFamily(family: string) {
     return this.prisma.refreshToken.updateMany({
       where: { family, revokedAt: null },

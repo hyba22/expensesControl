@@ -23,6 +23,7 @@ model User {
   transactions  Transaction[]
   budgets       Budget[]
   aiUsage       AiUsage[]
+  resets        PasswordReset[]
 }
 
 // A monthly spending limit for one category, repeated every month.
@@ -120,4 +121,18 @@ model RefreshToken {
 
   @@index([userId])
   @@index([family])
+}
+
+// A "forgot password" link. Like refresh tokens, only the hash is stored.
+model PasswordReset {
+  id        String    @id @default(uuid())
+  userId    String
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }

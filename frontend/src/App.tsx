@@ -6,9 +6,12 @@ import { SplashScreen } from './components/SplashScreen'
 import { Budgets } from './pages/Budgets'
 import { Categories } from './pages/Categories'
 import { Dashboard } from './pages/Dashboard'
+import { ForgotPassword } from './pages/ForgotPassword'
 import { Import } from './pages/Import'
 import { Login } from './pages/Login'
 import { Register } from './pages/Register'
+import { ResetPassword } from './pages/ResetPassword'
+import { Settings } from './pages/Settings'
 import { Statistics } from './pages/Statistics'
 import { Transactions } from './pages/Transactions'
 
@@ -29,6 +32,8 @@ export default function App() {
     <Routes>
       <Route path="/login" element={<GuestOnly><Login /></GuestOnly>} />
       <Route path="/register" element={<GuestOnly><Register /></GuestOnly>} />
+      <Route path="/forgot-password" element={<GuestOnly><ForgotPassword /></GuestOnly>} />
+      <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/app" element={<Protected><AppLayout /></Protected>}>
         <Route index element={<Dashboard />} />
         <Route path="transactions" element={<Transactions />} />
@@ -36,6 +41,7 @@ export default function App() {
         <Route path="budgets" element={<Budgets />} />
         <Route path="categories" element={<Categories />} />
         <Route path="import" element={<Import />} />
+        <Route path="settings" element={<Settings />} />
       </Route>
       <Route path="*" element={<Navigate to="/app" replace />} />
     </Routes>

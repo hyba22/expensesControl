@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { UsersModule } from '../users/users.module.js';
 import { CategoriesModule } from '../categories/categories.module.js';
+import { MailModule } from '../mail/mail.module.js';
 import { AuthController } from './auth.controller.js';
 import { AuthService } from './auth.service.js';
 import { TokensService } from './tokens.service.js';
@@ -12,6 +13,7 @@ import type { Env } from '../config/env.js';
   imports: [
     UsersModule,
     CategoriesModule,
+    MailModule,
     JwtModule.registerAsync({
       global: true,
       inject: [ConfigService],

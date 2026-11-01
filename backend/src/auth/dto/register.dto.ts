@@ -1,7 +1,8 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsEmail, IsIn, IsOptional, IsString, Length, Matches, MaxLength } from 'class-validator';
+import { IsEmail, IsIn, IsOptional, IsString, Length, MaxLength } from 'class-validator';
 import { CURRENCY_CODES } from '../../common/currencies.js';
+import { IsStrongPassword } from '../decorators/strong-password.decorator.js';
 
 export class RegisterDto {
   @ApiProperty({ example: 'Hiba' })
@@ -19,10 +20,7 @@ export class RegisterDto {
   email: string;
 
   @ApiProperty({ example: 'Str0ngPassword', minLength: 8 })
-  @IsString()
-  @Length(8, 128)
-  @Matches(/[A-Za-z]/, { message: 'password must contain a letter' })
-  @Matches(/\d/, { message: 'password must contain a number' })
+  @IsStrongPassword()
   password: string;
 
   @ApiPropertyOptional({ enum: CURRENCY_CODES, default: 'TND' })

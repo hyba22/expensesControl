@@ -55,6 +55,14 @@ export function Login() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
+          hint={
+            <Link
+              to="/forgot-password"
+              className="float-right text-xs font-medium text-brand hover:underline dark:text-brand-glow"
+            >
+              {t.auth.forgotLink}
+            </Link>
+          }
         />
         <FormError message={error} />
         <SubmitButton loading={loading}>{t.auth.signIn}</SubmitButton>

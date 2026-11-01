@@ -58,6 +58,30 @@ class EnvironmentVariables {
   @IsInt()
   @Min(1)
   AI_DAILY_LIMIT: number = 30;
+
+  // Emails (password reset), with SMTP or Resend. Optional in development.
+  @IsString()
+  SMTP_HOST: string = 'smtp.gmail.com';
+
+  @Type(() => Number)
+  @IsInt()
+  SMTP_PORT: number = 465;
+
+  @IsOptional()
+  @IsString()
+  SMTP_USER?: string;
+
+  @IsOptional()
+  @IsString()
+  SMTP_PASS?: string;
+
+  @IsOptional()
+  @IsString()
+  RESEND_API_KEY?: string;
+
+  @IsOptional()
+  @IsString()
+  MAIL_FROM?: string;
 }
 
 export type Env = EnvironmentVariables;

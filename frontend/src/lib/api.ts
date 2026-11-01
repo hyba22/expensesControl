@@ -144,4 +144,18 @@ export const auth = {
       accessToken = null
     }
   },
+
+  forgotPassword: (email: string, language: string) =>
+    send<void>('/auth/forgot-password', { method: 'POST', body: JSON.stringify({ email, language }) }),
+
+  resetPassword: (token: string, password: string) =>
+    send<void>('/auth/reset-password', { method: 'POST', body: JSON.stringify({ token, password }) }),
+
+  changePassword: (currentPassword: string, newPassword: string) =>
+    api<void>('/auth/change-password', { method: 'POST', body: JSON.stringify({ currentPassword, newPassword }) }),
+
+  deleteAccount: async (password: string) => {
+    await api<void>('/auth/delete-account', { method: 'POST', body: JSON.stringify({ password }) })
+    accessToken = null
+  },
 }
