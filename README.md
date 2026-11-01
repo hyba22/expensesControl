@@ -28,6 +28,7 @@ So I built something around those details instead of fighting them.
 - **Budgets.** A monthly limit per category, with a suggested amount based on your last 3 months. The bars turn orange at 80 % and red at 100 %, and you get an alert the moment an expense crosses a limit.
 - **Statistics.** Where the money goes (donut chart), how fast you're spending compared with last month, the last 6 months side by side, and the places you spend the most.
 - **AI assistant.** A little robot in the corner you can chat with. It sees a summary of your real numbers (budgets, categories, recent transactions) and gives short, practical budgeting tips. It won't give investment advice, and it ignores any instructions that might be hiding in imported bank text.
+- **Your account.** Pick your currency (dinars by default, or euros, dollars and a few others), change your name or password, reset a forgotten password by email, or delete your account and everything in it.
 
 ## Tech stack
 
@@ -39,11 +40,12 @@ So I built something around those details instead of fighting them.
 | Auth | JWT access tokens + rotating refresh tokens in httpOnly cookies, Argon2 password hashing |
 | Imports | unpdf (PDF text), Tesseract.js (OCR for scanned PDFs), csv-parse |
 | AI | Cloudflare Workers AI (Llama 3.3 70B), streamed to the browser |
+| Emails | Nodemailer with Gmail SMTP (Resend also works) |
 | Tests | Vitest |
 
 ## A few things I'm happy with
 
-**Security.** Passwords are hashed with Argon2id. The access token only lives in memory, and the refresh token sits in an httpOnly cookie that's single-use: if an old one is ever replayed, the whole session is closed. Login and sign-up are rate-limited, every query is scoped to the logged-in user, and the API rejects unknown fields.
+**Security.** Passwords are hashed with Argon2id. The access token only lives in memory, and the refresh token sits in an httpOnly cookie that's single-use: if an old one is ever replayed, the whole session is closed. Login and sign-up are rate-limited, every query is scoped to the logged-in user, and the API rejects unknown fields. Password reset links last 30 minutes, work once, and sign you out everywhere; asking for one never tells you whether an email has an account.
 
 **Money is stored as integers.** Everything is saved in millimes (`12.500 TND` → `12500`), so totals are always exact.
 
@@ -77,7 +79,10 @@ npx prisma migrate dev
 npm run start:dev       # http://localhost:3000, API docs at /api/docs
 ```
 
-The AI assistant is optional. To turn it on, add your Cloudflare account ID and a Workers AI API token to `.env`. Without them the rest of the app works normally.
+Two things in `.env` are optional, and the rest of the app works without them:
+
+- **AI assistant:** your Cloudflare account ID and a Workers AI API token.
+- **Password reset emails:** a Gmail address in `SMTP_USER` and a Gmail [app password](https://myaccount.google.com/apppasswords) in `SMTP_PASS` (2-step verification has to be on). Without them, the reset link is printed in the backend terminal instead.
 
 **3. Frontend** (in a second terminal):
 
@@ -104,7 +109,8 @@ cd frontend && npm test   # amount parsing
 backend/
   prisma/            database schema and migrations
   src/
-    auth/            sign-up, login, JWT and refresh tokens
+    auth/            sign-up, login, tokens, password reset, account deletion
+    mail/            reset emails (Gmail SMTP or Resend)
     transactions/    transactions and the dashboard summary
     categories/      default and custom categories
     imports/         PDF/CSV/OCR parsing and auto-categorization
@@ -113,17 +119,11 @@ backend/
     assistant/       AI assistant (Workers AI)
 frontend/
   src/
-    pages/           dashboard, transactions, statistics, budgets, categories, import
+    pages/           dashboard, transactions, statistics, budgets, categories, import, settings
     components/      shared UI, including the assistant chat
     i18n/            French and English texts
 samples/             fake documents for testing imports
 ```
-
-## What's next
-
-- A salary page that keeps the payslip details over time (gross vs net, CNSS, IRPP, overtime)
-- Choosing your currency, so it works outside Tunisia too
-- A demo account with sample data, and an online deployment
 
 ---
 

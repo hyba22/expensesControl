@@ -99,14 +99,6 @@ export const en = {
     noSpending: 'No expenses this month yet.',
     emptyTitle: 'Add your first transaction',
     emptyText: 'Record an expense or your salary to see your balance come to life.',
-    comingNext: 'Coming next',
-    upcoming: {
-      imports: ['Import CSV & PDF', 'Bank statements and Tunisian payslips.'],
-      charts: ['Charts', 'Spending by category and month to month.'],
-      budgets: ['Budgets', 'Monthly limits with alerts at 80% and 100%.'],
-      salary: ['Salary insights', 'Gross vs net, CNSS, IRPP and overtime.'],
-      ai: ['AI assistant', 'Ask questions and get a monthly summary.'],
-    },
   },
   transactions: {
     title: 'Transactions',

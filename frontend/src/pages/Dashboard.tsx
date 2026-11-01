@@ -4,7 +4,6 @@ import { motion } from 'motion/react'
 import {
   ArrowRight,
   ArrowUpRight,
-  PiggyBank,
   Plus,
   ReceiptText,
   Sparkles,
@@ -15,19 +14,14 @@ import {
 import { useAuth } from '../auth/AuthContext'
 import { useCategories } from '../data/CategoriesContext'
 import { useI18n } from '../i18n/I18nContext'
-import type { Dictionary } from '../i18n/en'
 import { categoryName } from '../lib/categoryStyle'
 import { budgetsApi, toDay, transactionsApi, type Budget, type Summary, type Transaction } from '../lib/finance'
 import { BudgetBar } from '../components/BudgetBar'
-import { AnimatedIcon, type IconAnimation } from '../components/AnimatedIcon'
+import { AnimatedIcon } from '../components/AnimatedIcon'
 import { CategoryIcon } from '../components/CategoryIcon'
 import { PrimaryButton } from '../components/PageHeader'
 import { TransactionForm } from '../components/TransactionForm'
 import { TransactionRow } from '../components/TransactionRow'
-
-const upcoming: { key: keyof Dictionary['dashboard']['upcoming']; icon: LucideIcon; animation: IconAnimation }[] = [
-  { key: 'salary', icon: PiggyBank, animation: 'wiggle' },
-]
 
 const container = { hidden: {}, show: { transition: { staggerChildren: 0.06 } } }
 const item = { hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0 } }
@@ -220,31 +214,6 @@ export function Dashboard() {
           </ul>
         )}
       </motion.section>
-
-      <section>
-        <motion.h2 variants={item} className="font-display text-lg font-semibold">
-          {t.dashboard.comingNext}
-        </motion.h2>
-        <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {upcoming.map(({ key, icon, animation }, i) => {
-            const [title, text] = t.dashboard.upcoming[key]
-            return (
-              <motion.article
-                key={key}
-                variants={item}
-                whileHover={{ y: -4 }}
-                className={`${card} group p-4 transition-colors hover:border-brand/40 dark:hover:border-brand-glow/40`}
-              >
-                <span className="grid size-10 place-items-center rounded-xl bg-ink text-white transition-colors group-hover:bg-brand dark:bg-white/10">
-                  <AnimatedIcon icon={icon} animation={animation} size={19} delay={i * 0.3} />
-                </span>
-                <h3 className="mt-3 text-sm font-medium">{title}</h3>
-                <p className="mt-1 text-xs text-ink/55 dark:text-white/55">{text}</p>
-              </motion.article>
-            )
-          })}
-        </div>
-      </section>
 
       <TransactionForm
         open={formOpen}

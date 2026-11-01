@@ -101,14 +101,6 @@ export const fr: Dictionary = {
     noSpending: 'Aucune dépense ce mois-ci pour l’instant.',
     emptyTitle: 'Ajoutez votre première transaction',
     emptyText: 'Enregistrez une dépense ou votre salaire pour voir votre solde prendre vie.',
-    comingNext: 'Bientôt',
-    upcoming: {
-      imports: ['Import CSV & PDF', 'Relevés bancaires et fiches de paie tunisiennes.'],
-      charts: ['Graphiques', 'Dépenses par catégorie et d’un mois à l’autre.'],
-      budgets: ['Budgets', 'Plafonds mensuels avec alertes à 80 % et 100 %.'],
-      salary: ['Analyse du salaire', 'Brut vs net, CNSS, IRPP et heures sup.'],
-      ai: ['Assistant IA', 'Posez vos questions et recevez un bilan mensuel.'],
-    },
   },
   transactions: {
     title: 'Transactions',
