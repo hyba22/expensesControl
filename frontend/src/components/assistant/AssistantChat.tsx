@@ -112,11 +112,11 @@ export function AssistantChat() {
             exit={{ scale: 0, rotate: 20 }}
             whileHover={{ scale: 1.08, y: -3 }}
             whileTap={{ scale: 0.92 }}
-            className="group fixed bottom-24 right-4 z-40 grid size-16 place-items-center rounded-2xl bg-brand text-white shadow-2xl shadow-brand/40 sm:bottom-6 sm:right-6"
+            className="group fixed bottom-[5.5rem] right-3 z-40 grid size-12 place-items-center rounded-2xl bg-brand text-white shadow-2xl shadow-brand/40 sm:bottom-6 sm:right-6 sm:size-16"
           >
             <span className="absolute inset-0 animate-ping rounded-2xl bg-brand/40 [animation-duration:2.5s]" />
             <span className="relative">
-              <RobotIcon size={36} />
+              <RobotIcon size={30} />
             </span>
           </motion.button>
         )}

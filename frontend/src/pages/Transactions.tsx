@@ -171,18 +171,24 @@ export function Transactions() {
         </div>
       </section>
 
-      <section className="grid grid-cols-3 gap-3">
+      <section className="grid gap-2 sm:grid-cols-3 sm:gap-3">
         {[
           { label: t.transactions.totalIn, value: income, className: 'text-emerald-600 dark:text-emerald-400', hint: t.transactions.receivedIn(lastMonth) },
           { label: t.transactions.totalOut, value: -spent, className: '' },
           { label: t.transactions.net, value: net, className: net >= 0 ? 'text-brand dark:text-brand-glow' : 'text-red-600 dark:text-red-400' },
         ].map((stat) => (
-          <div key={stat.label} className="rounded-2xl border border-black/5 bg-white p-3 sm:p-4 dark:border-white/8 dark:bg-ink-2">
-            <p className="text-xs text-ink/55 sm:text-sm dark:text-white/55">{stat.label}</p>
-            <p className={`mt-1 truncate font-display text-sm font-semibold tabular-nums sm:text-lg ${stat.className}`}>
+          <div
+            key={stat.label}
+            className="flex items-center justify-between gap-3 rounded-2xl border border-black/5 bg-white px-4 py-3 sm:block sm:p-4 dark:border-white/8 dark:bg-ink-2"
+          >
+            <div className="min-w-0">
+              <p className="text-sm text-ink/55 dark:text-white/55">{stat.label}</p>
+              {'hint' in stat && <p className="truncate text-xs text-ink/45 sm:hidden dark:text-white/45">{stat.hint}</p>}
+            </div>
+            <p className={`shrink-0 font-display font-semibold tabular-nums sm:mt-1 sm:truncate sm:text-lg ${stat.className}`}>
               {money(stat.value, { sign: true })}
             </p>
-            {'hint' in stat && <p className="truncate text-[11px] text-ink/45 sm:text-xs dark:text-white/45">{stat.hint}</p>}
+            {'hint' in stat && <p className="hidden truncate text-xs text-ink/45 sm:block dark:text-white/45">{stat.hint}</p>}
           </div>
         ))}
       </section>

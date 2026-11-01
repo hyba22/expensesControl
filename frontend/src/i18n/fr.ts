@@ -255,7 +255,7 @@ export const fr: Dictionary = {
     open: 'Demander à l’assistant',
     title: 'Assistant budget',
     subtitle: 'Des conseils basés sur vos propres chiffres',
-    placeholder: 'Posez une question sur vos dépenses…',
+    placeholder: 'Posez votre question…',
     send: 'Envoyer',
     greeting: (name: string) => `Bonjour ${name} ! Je vois vos budgets et vos dépenses. Que voulez-vous savoir ?`,
     suggestions: ['Où est passé mon argent ce mois-ci ?', 'Comment économiser 100 DT le mois prochain ?', 'Est-ce que je respecte mes budgets ?'],

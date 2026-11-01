@@ -9,10 +9,10 @@ import { Logo } from './Logo'
 import { ThemeToggle } from './ThemeToggle'
 
 const floating: { icon: LucideIcon; label: keyof Dictionary['auth']['floating']; className: string; delay: number }[] = [
-  { icon: Wallet, label: 'expenses', className: 'left-[8%] top-[22%]', delay: 0 },
-  { icon: ChartPie, label: 'charts', className: 'right-[10%] top-[30%]', delay: 0.6 },
-  { icon: FileText, label: 'imports', className: 'left-[14%] top-[58%]', delay: 1.2 },
-  { icon: BrainCircuit, label: 'ai', className: 'right-[8%] top-[64%]', delay: 1.8 },
+  { icon: Wallet, label: 'expenses', className: 'left-[8%] top-[14%]', delay: 0 },
+  { icon: ChartPie, label: 'charts', className: 'right-[10%] top-[23%]', delay: 0.6 },
+  { icon: FileText, label: 'imports', className: 'left-[14%] top-[33%]', delay: 1.2 },
+  { icon: BrainCircuit, label: 'ai', className: 'right-[8%] top-[43%]', delay: 1.8 },
 ]
 
 export function AuthLayout({ title, subtitle, children }: { title: string; subtitle: string; children: ReactNode }) {
@@ -73,7 +73,7 @@ export function AuthLayout({ title, subtitle, children }: { title: string; subti
         </div>
       </aside>
 
-      <main className="relative flex flex-col px-5 py-6 sm:px-10">
+      <main className="relative flex min-w-0 flex-col px-5 py-6 sm:px-10">
         <div className="flex items-center justify-between">
           <span className="lg:invisible">
             <Logo />
