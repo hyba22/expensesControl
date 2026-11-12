@@ -10,6 +10,8 @@ import { PrismaService } from '../prisma/prisma.service.js';
 import type { Env } from '../config/env.js';
 import { FinancialContext } from './financial-context.js';
 
+const DEMO_DAILY_LIMIT = 8;
+
 export interface ChatMessage {
   role: 'user' | 'assistant';
   content: string;
@@ -56,7 +58,7 @@ export class AssistantService {
     const used = await this.prisma.aiUsage.findUnique({
       where: { userId_day: { userId, day: this.today() } },
     });
-    const limit = this.config.get('AI_DAILY_LIMIT', { infer: true });
+    const limit = await this.dailyLimit(userId);
     return { configured: this.configured, remaining: Math.max(0, limit - (used?.count ?? 0)) };
   }
 
@@ -105,7 +107,7 @@ export class AssistantService {
 
   // Counts the message toward today's limit, atomically.
   private async countMessage(userId: string) {
-    const limit = this.config.get('AI_DAILY_LIMIT', { infer: true });
+    const limit = await this.dailyLimit(userId);
     const usage = await this.prisma.aiUsage.upsert({
       where: { userId_day: { userId, day: this.today() } },
       create: { userId, day: this.today(), count: 1 },
@@ -114,6 +116,13 @@ export class AssistantService {
     if (usage.count > limit) {
       throw new HttpException('AI_DAILY_LIMIT', HttpStatus.TOO_MANY_REQUESTS);
     }
+  }
+
+  // Anyone can open a demo, so demo accounts get a smaller share of the free AI quota.
+  private async dailyLimit(userId: string) {
+    const limit = this.config.get('AI_DAILY_LIMIT', { infer: true });
+    const user = await this.prisma.user.findUnique({ where: { id: userId }, select: { isDemo: true } });
+    return user?.isDemo ? Math.min(limit, DEMO_DAILY_LIMIT) : limit;
   }
 
   private today() {

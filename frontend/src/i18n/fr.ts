@@ -86,6 +86,17 @@ export const fr: Dictionary = {
   splash: {
     waking: 'Réveil du serveur… cela peut prendre jusqu’à une minute avec l’offre gratuite.',
   },
+  demo: {
+    or: 'ou',
+    button: 'Démo en direct',
+    hint: 'Découvrez un compte déjà rempli de données fictives. Sans inscription.',
+    banner: 'Compte de démonstration : données fictives, supprimées après 24 heures.',
+    createOwn: 'Créer mon propre compte',
+    settingsNote: 'Le mot de passe et la suppression du compte sont désactivés dans la démo.',
+    samplesTitle: 'Essayez avec des fichiers d’exemple',
+    samplesHint: 'Des documents fictifs prévus pour la démo : un clic et ils sont lus comme les vôtres.',
+    samples: { payslip: 'Fiche de paie (PDF)', statement: 'Relevé bancaire (PDF)', csv: 'Export bancaire (CSV)' },
+  },
   dashboard: {
     budgetsTitle: 'Budgets à surveiller',
     noBudgets: 'Fixez des plafonds mensuels pour être alerté avant de trop dépenser.',

@@ -21,7 +21,6 @@ import { useI18n } from '../i18n/I18nContext'
 import { categoryName } from '../lib/categoryStyle'
 import { statsApi, toDay, type Stats } from '../lib/finance'
 import { useIsDark } from '../lib/useIsDark'
-import { AnimatedIcon } from '../components/AnimatedIcon'
 import { CategoryIcon } from '../components/CategoryIcon'
 import { MonthSwitcher } from '../components/MonthSwitcher'
 import { PageHeader } from '../components/PageHeader'
@@ -235,7 +234,7 @@ function Empty() {
   return (
     <div className="flex flex-col items-center py-8 text-center text-sm text-ink/55 dark:text-white/55">
       <span className="mb-3 grid size-12 place-items-center rounded-2xl bg-brand-soft text-brand dark:bg-brand/20 dark:text-brand-glow">
-        <AnimatedIcon icon={ChartPie} animation="spin" size={22} />
+        <ChartPie size={22} strokeWidth={1.8} aria-hidden="true" />
       </span>
       {t.stats.empty}
     </div>

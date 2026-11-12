@@ -84,6 +84,17 @@ export const en = {
   splash: {
     waking: 'Waking up the server… this can take up to a minute on the free plan.',
   },
+  demo: {
+    or: 'or',
+    button: 'Live demo',
+    hint: 'Explore an account already filled with sample data. No sign-up needed.',
+    banner: 'Demo account: sample data, deleted after 24 hours.',
+    createOwn: 'Create my own account',
+    settingsNote: 'Password and account deletion are turned off in the demo.',
+    samplesTitle: 'Try it with sample files',
+    samplesHint: 'Fake documents made for the demo: one click reads them like your own.',
+    samples: { payslip: 'Payslip (PDF)', statement: 'Bank statement (PDF)', csv: 'Bank export (CSV)' },
+  },
   dashboard: {
     budgetsTitle: 'Budgets to watch',
     noBudgets: 'Set monthly limits to get alerts before overspending.',

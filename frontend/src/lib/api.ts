@@ -5,6 +5,7 @@ export interface User {
   email: string
   name: string
   currency: string
+  isDemo: boolean
   createdAt: string
 }
 
@@ -136,6 +137,8 @@ export const auth = {
 
   login: (data: { email: string; password: string }) =>
     send<AuthResponse>('/auth/login', { method: 'POST', body: JSON.stringify(data) }).then(remember),
+
+  demo: () => send<AuthResponse>('/auth/demo', { method: 'POST' }).then(remember),
 
   logout: async () => {
     try {

@@ -5,7 +5,8 @@ import { useAuth } from '../../auth/AuthContext'
 import { useI18n } from '../../i18n/I18nContext'
 import { ApiError, api, apiStream, errorText } from '../../lib/api'
 import { Markdown } from './Markdown'
-import { RobotIcon } from './RobotIcon'
+
+const avatar = '/assistant-avatar.png'
 
 interface Message {
   role: 'user' | 'assistant'
@@ -112,12 +113,10 @@ export function AssistantChat() {
             exit={{ scale: 0, rotate: 20 }}
             whileHover={{ scale: 1.08, y: -3 }}
             whileTap={{ scale: 0.92 }}
-            className="group fixed bottom-[5.5rem] right-3 z-40 grid size-12 place-items-center rounded-2xl bg-brand text-white shadow-2xl shadow-brand/40 sm:bottom-6 sm:right-6 sm:size-16"
+            className="group fixed bottom-[5.5rem] right-3 z-40 grid size-12 place-items-center rounded-full bg-brand p-[3px] shadow-2xl shadow-brand/40 sm:bottom-6 sm:right-6 sm:size-16"
           >
-            <span className="absolute inset-0 animate-ping rounded-2xl bg-brand/40 [animation-duration:2.5s]" />
-            <span className="relative">
-              <RobotIcon size={30} />
-            </span>
+            <span className="absolute inset-0 animate-ping rounded-full bg-brand/40 [animation-duration:2.5s]" />
+            <img src={avatar} alt="" className="relative size-full rounded-full object-cover" />
           </motion.button>
         )}
       </AnimatePresence>
@@ -135,9 +134,7 @@ export function AssistantChat() {
           >
             <header className="relative flex items-center gap-3 overflow-hidden bg-ink px-4 py-3.5 text-white">
               <div className="pointer-events-none absolute -right-10 -top-16 size-40 rounded-full bg-brand/50 blur-3xl" />
-              <span className="relative grid size-11 place-items-center rounded-xl bg-brand">
-                <RobotIcon size={28} talking={busy} />
-              </span>
+              <img src={avatar} alt="" className="relative size-11 rounded-full object-cover ring-2 ring-white/20" />
               <div className="relative min-w-0 flex-1">
                 <p className="font-display font-semibold">{t.assistant.title}</p>
                 <p className="truncate text-xs text-white/60">{t.assistant.subtitle}</p>
@@ -245,8 +242,9 @@ function Bubble({ role, error, children }: { role: 'user' | 'assistant'; error?:
     <motion.div
       initial={{ opacity: 0, y: 8, scale: 0.98 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
-      className={`flex ${mine ? 'justify-end' : 'justify-start'}`}
+      className={`flex items-end gap-2 ${mine ? 'justify-end' : 'justify-start'}`}
     >
+      {!mine && <img src={avatar} alt="" className="size-7 shrink-0 rounded-full object-cover ring-1 ring-brand/30" />}
       <div
         className={`max-w-[85%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed ${
           mine

@@ -15,6 +15,8 @@ model User {
   passwordHash String
   // ISO code (TND, EUR...). Amounts stay in thousandths whatever it is.
   currency     String   @default("TND")
+  // Live demo accounts: filled with sample data and deleted after a day.
+  isDemo       Boolean  @default(false)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 

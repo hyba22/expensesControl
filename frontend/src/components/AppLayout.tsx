@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { NavLink, Outlet } from 'react-router-dom'
+import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { motion } from 'motion/react'
-import { ChartPie, FileUp, LayoutDashboard, LogOut, ReceiptText, Shapes, Target, type LucideIcon } from 'lucide-react'
+import { ChartPie, FileUp, LayoutDashboard, LogOut, MonitorPlay, ReceiptText, Shapes, Target, type LucideIcon } from 'lucide-react'
 import { useAuth } from '../auth/AuthContext'
 import { CategoriesProvider } from '../data/CategoriesContext'
 import { useI18n } from '../i18n/I18nContext'
@@ -22,8 +22,9 @@ const links: { to: string; label: 'dashboard' | 'transactions' | 'stats' | 'budg
 ]
 
 export function AppLayout() {
-  const { logout } = useAuth()
+  const { user, logout } = useAuth()
   const { t } = useI18n()
+  const navigate = useNavigate()
   const [leaving, setLeaving] = useState(false)
 
   return (
@@ -32,7 +33,7 @@ export function AppLayout() {
         <div className="min-h-dvh bg-zinc-50 pb-24 sm:pb-0 dark:bg-ink">
           <header className="sticky top-0 z-30 border-b border-black/5 bg-white/80 backdrop-blur-lg dark:border-white/8 dark:bg-ink/80">
             <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 2xl:max-w-screen-2xl">
-              <Logo compact />
+              <Logo compact still />
               <nav className="hidden items-center gap-1 rounded-2xl bg-black/[0.04] p-1 sm:flex dark:bg-white/[0.06]">
                 {links.map(({ to, label, icon: Icon }) => (
                   <NavLink
@@ -81,6 +82,23 @@ export function AppLayout() {
               </div>
             </div>
           </header>
+
+          {user?.isDemo && (
+            <div className="bg-brand px-4 py-2 text-center text-sm text-white">
+              <MonitorPlay size={15} className="mr-1.5 inline -translate-y-px" />
+              {t.demo.banner}{' '}
+              <button
+                type="button"
+                onClick={async () => {
+                  await logout()
+                  navigate('/register')
+                }}
+                className="font-semibold underline underline-offset-2 hover:no-underline"
+              >
+                {t.demo.createOwn}
+              </button>
+            </div>
+          )}
 
           <Outlet />
           <AssistantChat />

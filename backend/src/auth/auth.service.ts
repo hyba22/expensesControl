@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   ConflictException,
+  ForbiddenException,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -85,7 +86,7 @@ export class AuthService {
   // used to find out who has an account.
   async forgotPassword(email: string, language: 'fr' | 'en' = 'fr') {
     const user = await this.users.findByEmail(email);
-    if (!user) return;
+    if (!user || user.isDemo) return;
 
     // Only the latest link works.
     await this.prisma.passwordReset.deleteMany({ where: { userId: user.id, usedAt: null } });
@@ -143,6 +144,8 @@ export class AuthService {
   private async checkPassword(userId: string, password: string) {
     const user = await this.users.findById(userId);
     if (!user) throw new UnauthorizedException();
+    // Demo accounts have no password anyone knows, and they delete themselves.
+    if (user.isDemo) throw new ForbiddenException('DEMO_ACCOUNT');
     if (!(await argon2.verify(user.passwordHash, password))) {
       throw new BadRequestException('WRONG_PASSWORD');
     }

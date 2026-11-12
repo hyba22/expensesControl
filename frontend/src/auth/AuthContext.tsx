@@ -8,6 +8,7 @@ interface AuthState {
   user: User | null
   status: Status
   login: (email: string, password: string) => Promise<void>
+  startDemo: () => Promise<void>
   register: (name: string, email: string, password: string, currency: string) => Promise<void>
   updateProfile: (data: { name?: string; currency?: string }) => Promise<void>
   deleteAccount: (password: string) => Promise<void>
@@ -41,6 +42,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     user,
     status,
     login: async (email, password) => signIn(await auth.login({ email, password })),
+    startDemo: async () => signIn(await auth.demo()),
     register: async (name, email, password, currency) =>
       signIn(await auth.register({ name, email, password, currency })),
     updateProfile: async (data) => signIn(await usersApi.updateMe(data)),

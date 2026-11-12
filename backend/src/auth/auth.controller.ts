@@ -15,6 +15,7 @@ import { Throttle } from '@nestjs/throttler';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import type { CookieOptions, Request, Response } from 'express';
 import { AuthService } from './auth.service.js';
+import { DemoService } from './demo.service.js';
 import type { IssuedTokens } from './tokens.service.js';
 import { LoginDto } from './dto/login.dto.js';
 import { RegisterDto } from './dto/register.dto.js';
@@ -41,6 +42,7 @@ const AUTH_LIMIT = { default: { limit: 5, ttl: 60_000 } };
 export class AuthController {
   constructor(
     private readonly auth: AuthService,
+    private readonly demo: DemoService,
     private readonly config: ConfigService<Env, true>,
   ) {}
 
@@ -66,6 +68,19 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     const { user, tokens } = await this.auth.login(dto, userAgent);
+    return this.respond(res, user, tokens);
+  }
+
+  // Opens a fresh demo account filled with sample data.
+  @Public()
+  @Throttle(AUTH_LIMIT)
+  @HttpCode(200)
+  @Post('demo')
+  async startDemo(
+    @Headers('user-agent') userAgent: string | undefined,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const { user, tokens } = await this.demo.start(userAgent);
     return this.respond(res, user, tokens);
   }
 

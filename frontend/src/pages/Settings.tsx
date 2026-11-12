@@ -37,6 +37,7 @@ const wrongPassword = (err: unknown) => err instanceof ApiError && err.message =
 
 export function Settings() {
   const { t } = useI18n()
+  const { user } = useAuth()
 
   return (
     <main className="mx-auto max-w-2xl space-y-6 px-4 py-8 sm:px-6 sm:py-10">
@@ -50,12 +51,21 @@ export function Settings() {
         <Section title={t.settings.profile} icon={<User size={17} />}>
           <ProfileForm />
         </Section>
-        <Section title={t.settings.security} icon={<KeyRound size={17} />}>
-          <PasswordForm />
-        </Section>
-        <Section title={t.settings.danger} icon={<TriangleAlert size={17} />} danger>
-          <DeleteAccount />
-        </Section>
+        {user?.isDemo ? (
+          <p className="flex gap-2 rounded-xl bg-brand-soft/60 px-4 py-3 text-sm text-ink/70 dark:bg-brand/10 dark:text-white/70">
+            <Info size={17} className="mt-0.5 shrink-0 text-brand dark:text-brand-glow" />
+            {t.demo.settingsNote}
+          </p>
+        ) : (
+          <>
+            <Section title={t.settings.security} icon={<KeyRound size={17} />}>
+              <PasswordForm />
+            </Section>
+            <Section title={t.settings.danger} icon={<TriangleAlert size={17} />} danger>
+              <DeleteAccount />
+            </Section>
+          </>
+        )}
       </motion.div>
     </main>
   )

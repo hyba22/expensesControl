@@ -6,6 +6,7 @@ import { CategoriesModule } from '../categories/categories.module.js';
 import { MailModule } from '../mail/mail.module.js';
 import { AuthController } from './auth.controller.js';
 import { AuthService } from './auth.service.js';
+import { DemoService } from './demo.service.js';
 import { TokensService } from './tokens.service.js';
 import type { Env } from '../config/env.js';
 
@@ -28,6 +29,6 @@ import type { Env } from '../config/env.js';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, TokensService],
+  providers: [AuthService, DemoService, TokensService],
 })
 export class AuthModule {}

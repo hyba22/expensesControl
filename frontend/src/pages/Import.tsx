@@ -13,6 +13,7 @@ import {
   ScanText,
   TriangleAlert,
 } from 'lucide-react'
+import { useAuth } from '../auth/AuthContext'
 import { useCategories } from '../data/CategoriesContext'
 import { useBudgetAlerts } from '../data/useBudgetAlerts'
 import { useI18n } from '../i18n/I18nContext'
@@ -24,6 +25,12 @@ import { FormError } from '../components/FormError'
 import { PageHeader } from '../components/PageHeader'
 import { SubmitButton } from '../components/SubmitButton'
 
+const SAMPLES = [
+  { key: 'payslip', file: 'fake-payslip.pdf', type: 'application/pdf', icon: ReceiptText },
+  { key: 'statement', file: 'fake-bank-statement.pdf', type: 'application/pdf', icon: FileText },
+  { key: 'csv', file: 'fake-bank-statement.csv', type: 'text/csv', icon: FileSpreadsheet },
+] as const
+
 type Step = 'pick' | 'reading' | 'review' | 'done'
 type Row = ImportRow & { selected: boolean }
 
@@ -32,6 +39,7 @@ const card = 'rounded-2xl border border-black/5 bg-white dark:border-white/8 dar
 
 export function Import() {
   const { t } = useI18n()
+  const { user } = useAuth()
   const { reload: reloadCategories } = useCategories()
   const showAlerts = useBudgetAlerts()
   const [step, setStep] = useState<Step>('pick')
@@ -105,6 +113,7 @@ export function Import() {
         {step === 'pick' && (
           <motion.div key="pick" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }} className="space-y-4">
             <DropZone onFile={(f) => void read(f)} />
+            {user?.isDemo && <SampleFiles onFile={(f) => void read(f)} />}
             <FormError message={error} />
           </motion.div>
         )}
@@ -202,6 +211,36 @@ export function Import() {
         )}
       </AnimatePresence>
     </main>
+  )
+}
+
+// Demo visitors have no bank documents at hand: these fake ones are read like real uploads.
+function SampleFiles({ onFile }: { onFile: (file: File) => void }) {
+  const { t } = useI18n()
+
+  const open = async ({ file, type }: (typeof SAMPLES)[number]) => {
+    const blob = await fetch(`/samples/${file}`).then((r) => r.blob())
+    onFile(new File([blob], file, { type }))
+  }
+
+  return (
+    <div className={`${card} p-5`}>
+      <p className="font-display font-semibold">{t.demo.samplesTitle}</p>
+      <p className="mt-1 text-sm text-ink/55 dark:text-white/55">{t.demo.samplesHint}</p>
+      <div className="mt-4 flex flex-wrap gap-2">
+        {SAMPLES.map((sample) => (
+          <button
+            key={sample.key}
+            type="button"
+            onClick={() => void open(sample)}
+            className="flex items-center gap-2 rounded-xl border border-brand/30 px-3.5 py-2 text-sm font-medium text-brand transition hover:bg-brand-soft dark:border-brand-glow/30 dark:text-brand-glow dark:hover:bg-brand/15"
+          >
+            <sample.icon size={16} />
+            {t.demo.samples[sample.key]}
+          </button>
+        ))}
+      </div>
+    </div>
   )
 }
 
